@@ -70,11 +70,13 @@ public:
 		if (m_startButton.leftClicked())
 		{
 			// ゲームシーンへ
+			submit.playOneShot();
 			changeScene(State::Game);
 		}
 		else if (m_exitButton.leftClicked())
 		{
 			// 終了
+			submit.playOneShot();
 			System::Exit();
 		}
 	}
@@ -101,6 +103,8 @@ private:
 	const Font TitleFont{ 60, Typeface::Bold };
 	const Font StartFont{ 24 };
 	const Font ExitFont{ 24 };
+	const Audio submit{ U"SE/submit.mp3" };
+
 };
 
 
@@ -217,6 +221,7 @@ class Bricks final {
 private:
 	/// @brief ブロックリスト
 	Rect brickTable[constants::brick::MAX];
+	const Audio shot{ U"SE/shot.mp3" };
 
 public:
 	uint32 remaingBricks = constants::brick::MAX;
@@ -255,6 +260,7 @@ public:
 class Paddle final {
 private:
 	Rect paddle;
+	const Audio stretch{ U"SE/stretch.mp3" };
 
 public:
 	Size currentSize;
@@ -278,6 +284,7 @@ public:
 	void ExpandSize() {
 		paddle.size.x *= 2;
 		currentSize.x *= 2;
+		stretch.playOneShot();
 	}
 
 	/// @brief パドルのサイズをもとに戻す
@@ -423,6 +430,7 @@ void Bricks::Intersects(Ball* const target, ScoreManager* score) {
 			// あたったブロックは画面外に出す
 			refBrick.y -= 600;
 			remaingBricks--;
+			shot.playOneShot();
 			// 同一フレームでは複数のブロック衝突を検知しない
 			break;
 		}
@@ -461,15 +469,11 @@ void StretchItem::Intersects(Paddle* const target) {
 }
 
 class Clear : public GameManager::Scene {
-private:
-	const Font TextFont{ 60, Typeface::Bold };
 
 public:
 
 	/// @brief コンストラクタ
-	Clear(const InitData& init) : IScene{ init } {
-
-	}
+	Clear(const InitData& init) : IScene{ init } {}
 
 	void update() override
 	{
@@ -484,11 +488,13 @@ public:
 		if (m_startButton.leftClicked())
 		{
 			// タイトルへ
+			submit.playOneShot();
 			changeScene(State::Title);
 		}
 		else if (m_exitButton.leftClicked())
 		{
 			// 終了
+			submit.playOneShot();
 			System::Exit();
 		}
 	}
@@ -500,7 +506,7 @@ public:
 		m_exitButton.draw(ColorF(U"#51fbed").setA(m_exitTransition.value())).drawFrame(1, Color(30, 26, 27));
 
 		//文字描画
-		TitleFont(U"Clear!!!!").drawAt(Scene::Center().x, Scene::Center().y - 120, Color(157, 21, 36));
+		TextFont(U"Clear!!!!").drawAt(Scene::Center().x, Scene::Center().y - 120, Color(157, 21, 36));
 		ScoreFont(U"Score:", ScoreManager::GetScore()).drawAt(Scene::Center().x, Scene::Center().y - 40, Color(157, 21, 36));
 		StartFont(U"Back to Title").drawAt(m_startButton.center(), Color(30, 26, 27));
 		ExitFont(U"Exit").drawAt(m_exitButton.center(), Color(30, 26, 27));
@@ -513,18 +519,14 @@ private:
 	Transition m_startTransition{ 0.4s, 0.2s };
 	Rect m_exitButton{ Arg::center = Scene::Center().movedBy(0, 200), 300, 60 };
 	Transition m_exitTransition{ 0.4s, 0.2s };
-	const Font ScoreFont{ 36 };
-	const Font TitleFont{ 48, Typeface::Bold };
+	const Font ScoreFont{ 24 };
+	const Font TextFont{ 48, Typeface::Bold };
 	const Font StartFont{ 24 };
 	const Font ExitFont{ 24 };
-
-
+	const Audio submit{ U"SE/submit.mp3" };
 };
 
 class GameOver : public GameManager::Scene {
-
-private:
-	const Font TextFont{ 60, Typeface::Bold };
 
 public:
 
@@ -545,11 +547,13 @@ public:
 		if (m_startButton.leftClicked())
 		{
 			// タイトルへ
+			submit.playOneShot();
 			changeScene(State::Title);
 		}
 		else if (m_exitButton.leftClicked())
 		{
 			// 終了
+			submit.playOneShot();
 			System::Exit();
 		}
 	}
@@ -561,7 +565,7 @@ public:
 		m_exitButton.draw(ColorF(U"#51fbed").setA(m_exitTransition.value())).drawFrame(1, Color(30, 26, 27));
 
 		//文字描画
-		TitleFont(U"GameOver").drawAt(Scene::Center().x, Scene::Center().y - 120, Color(157, 21, 36));
+		TextFont(U"GameOver...").drawAt(Scene::Center().x, Scene::Center().y - 120, Color(157, 21, 36));
 		ScoreFont(U"Score:", ScoreManager::GetScore()).drawAt(Scene::Center().x, Scene::Center().y - 40, Color(157, 21, 36));
 		StartFont(U"Back to Title").drawAt(m_startButton.center(), Color(30, 26, 27));
 		ExitFont(U"Exit").drawAt(m_exitButton.center(), Color(30, 26, 27));
@@ -574,10 +578,11 @@ private:
 	Transition m_startTransition{ 0.4s, 0.2s };
 	Rect m_exitButton{ Arg::center = Scene::Center().movedBy(0, 200), 300, 60 };
 	Transition m_exitTransition{ 0.4s, 0.2s };
-	const Font TitleFont{ 60, Typeface::Bold };
-	const Font ScoreFont{ 36 };
+	const Font TextFont{ 48, Typeface::Bold };
+	const Font ScoreFont{ 24 };
 	const Font StartFont{ 24 };
 	const Font ExitFont{ 24 };
+	const Audio submit{ U"SE/submit.mp3" };
 
 };
 
